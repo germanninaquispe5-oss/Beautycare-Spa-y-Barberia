@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCare - Spa & Barbería a Domicilio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fdf4f7',
+                            100: '#fbe8f0',
+                            200: '#f7d2e3',
+                            300: '#f2adcc',
+                            400: '#ea7aaa',
+                            500: '#e04c89',
+                            600: '#cc2d6a',
+                            700: '#ab1f53',
+                            800: '#8e1d46',
+                            900: '#771d3e',
+                            950: '#480a22',
+                        },
+                        darkgold: {
+                            400: '#d4af37',
+                            500: '#c5a028',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e04c89;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #cc2d6a;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+    <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/80 transition-all shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 via-brand-500 to-amber-400 p-0.5 shadow-md shadow-brand-500/20">
+                    <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
+                        <i class="fa-solid font-bold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-amber-500 fa-spa"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-serif text-2xl font-bold tracking-tight text-slate-900">Beauty<span class="text-brand-600">Care</span></span>
+                    <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 -mt-1">Spa & Barbería Premium</span>
+                </div>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-sm text-slate-600">
+                <button onclick="navigateTo('services')" class="hover:text-brand-600 transition">Catálogo de Servicios</button>
+                <button onclick="navigateTo('specialists')" class="hover:text-brand-600 transition">Nuestros Especialistas</button>
+                <button onclick="navigateTo('coverage')" class="hover:text-brand-600 transition"><i class="fa-solid fa-location-dot text-brand-500 mr-1.5"></i>Cobertura Lima</button>
+            </nav>
+
+            <!-- User Menu / Cart -->
+            <div class="flex items-center space-x-4">
+                <button onclick="openCartModal()" class="relative p-2.5 rounded-full hover:bg-slate-100 transition text-slate-700">
+                    <i class="fa-solid fa-bag-shopping text-xl"></i>
+                    <span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-brand-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
+                </button>
+
+                <div id="user-profile-btn" class="hidden flex items-center space-x-3 bg-slate-100 hover:bg-slate-200/80 p-1.5 pr-4 rounded-full transition cursor-pointer" onclick="openProfileModal()">
+                    <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Avatar" class="w-8 h-8 rounded-full object-cover border border-white shadow-sm">
+                    <span id="user-name-display" class="text-xs font-semibold text-slate-700">German N.</span>
+                    <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+                </div>
+
+                <button id="login-nav-btn" onclick="openLoginModal()" class="bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold text-xs px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-brand-500/30 transition transform hover:-translate-y-0.5 active:translate-y-0">
+                    Iniciar Sesión
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="flex-grow">
+        <section id="sec-home" class="relative overflow-hidden pt-8 pb-20 lg:pt-16 lg:pb-32">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    <!-- Text Content -->
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center space-x-2 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-bold px-4 py-2 rounded-full shadow-sm">
+                            <span class="flex h-2 w-2 rounded-full bg-brand-500 animate-ping"></span>
+                            <span>Servicio de Spa & Barbería VIP a Domicilio en Lima</span>
+                        </div>
+                        <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
+                            Tu espacio de bienestar personal, <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-brand-500 to-amber-500">donde tú estés.</span>
+                        </h1>
+                        <p class="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            Especialistas calificados directamente en tu hogar u oficina con equipamiento sanitizado, productos premium e indumentaria profesional.
+                        </p>
+
+                        <!-- Fast Category Toggle -->
+                        <div class="flex flex-wrap justify-center lg:justify-start gap-3 pt-4">
+                            <button onclick="filterServices('all'); navigateTo('services');" class="bg-slate-900 text-white font-medium text-sm px-6 py-3 rounded-xl hover:bg-slate-800 transition shadow-lg shadow-slate-900/10">
+                                Ver Todo el Catálogo <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                            </button>
+                            <button onclick="filterServices('barber'); navigateTo('services');" class="bg-amber-500/10 text-amber-800 border border-amber-300 font-medium text-sm px-5 py-3 rounded-xl hover:bg-amber-500/20 transition">
+                                <i class="fa-solid fa-scissors mr-2 text-amber-600"></i> Barbería (Hombres)
+                            </button>
+                            <button onclick="filterServices('spa'); navigateTo('services');" class="bg-brand-50 text-brand-700 border border-brand-200 font-medium text-sm px-5 py-3 rounded-xl hover:bg-brand-100 transition">
+                                <i class="fa-solid fa-spa mr-2 text-brand-500"></i> Spa & Estética (Mujeres)
+                            </button>
+                        </div>
+
+                        <!-- Trust Features -->
+                        <div class="grid grid-cols-3 gap-4 pt-8 border-t border-slate-200 max-w-lg mx-auto lg:mx-0">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xl">4.9 ★</h4>
+                                <p class="text-xs text-slate-500 font-medium">+2,400 Clientes Felices</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xl">100%</h4>
+                                <p class="text-xs text-slate-500 font-medium">Protocolo Sanitizado</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xl">20+</h4>
+                                <p class="text-xs text-slate-500 font-medium">Especialistas Verificados</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Hero Graphic -->
+                    <div class="lg:col-span-5 relative">
+                        <div class="relative mx-auto max-w-md lg:max-w-none">
+                            <div class="aspect-square rounded-3xl overflow-hidden shadow-2xl relative">
+                                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=800" alt="Spa Service" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
+                                <div class="absolute bottom-6 left-6 right-6 p-4 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-white/20">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-lg">
+                                            <i class="fa-solid fa-shield-halved"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-bold text-slate-900">Garantía de Calidad BeautyCare</p>
+                                            <p class="text-[11px] text-slate-500">Profesionales certificados con antecedentes verificados.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-services" class="py-16 bg-white border-t border-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Catálogo de Servicios Premium</h2>
+                    <p class="text-slate-500 text-sm mt-2">Selecciona uno o varios tratamientos para tu cita a domicilio en Lima</p>
+                    
+                    <!-- Filter Buttons -->
+                    <div class="flex justify-center space-x-2 mt-6">
+                        <button id="btn-filter-all" onclick="filterServices('all')" class="filter-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-brand-600 text-white">Todos</button>
+                        <button id="btn-filter-spa" onclick="filterServices('spa')" class="filter-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200">Spa & Estética (Mujeres)</button>
+                        <button id="btn-filter-barber" onclick="filterServices('barber')" class="filter-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200">Barbería & Grooming (Hombres)</button>
+                    </div>
+                </div>
+
+                <!-- Services Grid -->
+                <div id="services-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Dynamic Services JS Rendering -->
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-specialists" class="py-16 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
+                    <div>
+                        <span class="text-brand-600 text-xs font-extrabold uppercase tracking-widest">Equipo Certificado</span>
+                        <h2 class="font-serif text-3xl font-bold text-slate-900 mt-1">Especialistas Exclusivos</h2>
+                    </div>
+                    <p class="text-slate-500 text-xs max-w-md mt-2 md:mt-0">
+                        Cada profesional cuenta con antecedentes verificados, titulación en cosmética/barbería y protocolos rigurosos de higiene.
+                    </p>
+                </div>
+
+                <div id="specialists-grid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Dynamic Specialists JS Rendering -->
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-coverage" class="py-16 bg-white border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-5 space-y-4">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Lima Metropolitana</span>
+                        <h2 class="font-serif text-3xl font-bold text-slate-900">Zonas con Cobertura VIP Inmediata</h2>
+                        <p class="text-slate-600 text-sm">
+                            Llegamos a tu domicilio, departamento u oficina equipados con camillas plegables, toallas esterilizadas, lámparas de luz LED y productos de gama alta.
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs font-semibold text-slate-700 flex items-center">
+                                <i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Miraflores & San Isidro
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs font-semibold text-slate-700 flex items-center">
+                                <i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Santiago de Surco & La Molina
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs font-semibold text-slate-700 flex items-center">
+                                <i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> San Borja & Barranco
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs font-semibold text-slate-700 flex items-center">
+                                <i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Jesús María & Magdalena
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulated Google Maps Preview -->
+                    <div class="lg:col-span-7 bg-slate-900 rounded-3xl h-96 relative overflow-hidden shadow-xl border border-slate-800">
+                        <div class="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-77.0305,-12.0931,12,0/800x500?access_token=pk.dummy')] bg-cover bg-center opacity-60"></div>
+                        <!-- Overlay Graphic elements simulating map pins -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="relative w-full h-full p-8 flex flex-col justify-between">
+                                <div class="bg-white/90 backdrop-blur p-3 rounded-2xl max-w-xs shadow-md border border-white">
+                                    <p class="text-xs font-bold text-slate-900"><i class="fa-solid fa-location-crosshairs text-brand-600 mr-1.5"></i> Dirección Seleccionada:</p>
+                                    <p id="map-address-preview" class="text-xs text-slate-600 mt-0.5">Av. Javier Prado Este 2465, San Borja, Lima</p>
+                                </div>
+                                <div class="flex justify-end">
+                                    <span class="bg-slate-900/90 text-white text-[11px] px-3 py-1.5 rounded-xl border border-slate-700">
+                                        <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Tiempo de llegada est.: 45 min
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- Login / Verification Modal -->
+    <div id="modal-login" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 animate-in fade-in zoom-in duration-200">
+            <button onclick="closeLoginModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-bold text-slate-900">Iniciar Sesión</h3>
+                <p class="text-xs text-slate-500 mt-1">Ingresa con tus credenciales verificadas para gestionar citas</p>
+            </div>
+
+            <!-- Login Quick Selection Preset -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 mb-5">
+                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Usuario registrado verificado:</p>
+                <button onclick="autofillGermanData()" class="w-full text-left bg-white hover:bg-brand-50 border border-slate-200 hover:border-brand-300 p-2.5 rounded-xl transition flex items-center justify-between group">
+                    <div class="flex items-center space-x-3">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" class="w-8 h-8 rounded-full object-cover">
+                        <div>
+                            <p class="text-xs font-bold text-slate-800 group-hover:text-brand-700">German Ninaquispe Senmache</p>
+                            <p class="text-[10px] text-slate-500">german.ninaquispe@usil.pe</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-brand-600 font-bold bg-brand-50 group-hover:bg-brand-100 px-2.5 py-1 rounded-lg">Cargar</span>
+                </button>
+            </div>
+
+            <form id="login-form" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Correo Electrónico</label>
+                    <input type="email" id="login-email" required placeholder="correo@ejemplo.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Teléfono Móvil</label>
+                    <input type="tel" id="login-phone" required placeholder="+51 973 412 339" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+                </div>
+
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-3.5 rounded-xl shadow-lg shadow-brand-600/30 transition">
+                    Verificar e Iniciar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="modal-profile" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100">
+            <button onclick="closeProfileModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center space-x-4 mb-6">
+                <img id="profile-avatar-modal" src="" class="w-16 h-16 rounded-full object-cover border-2 border-brand-500">
+                <div>
+                    <h3 id="profile-name-modal" class="font-bold text-xl text-slate-900">--</h3>
+                    <p id="profile-email-modal" class="text-xs text-slate-500">--</p>
+                    <span class="inline-block mt-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Cliente Verificado VIP</span>
+                </div>
+            </div>
+
+            <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs">
+                <div class="flex justify-between py-1 border-b border-slate-200/60">
+                    <span class="text-slate-500">Teléfono:</span>
+                    <span id="profile-phone-modal" class="font-semibold text-slate-800">--</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-200/60">
+                    <span class="text-slate-500">Dirección Principal:</span>
+                    <span id="profile-address-modal" class="font-semibold text-slate-800">Lima, Perú</span>
+                </div>
+                <div class="flex justify-between py-1">
+                    <span class="text-slate-500">RUC Configurado:</span>
+                    <span id="profile-ruc-modal" class="font-semibold text-slate-800">10973412339 (German N.)</span>
+                </div>
+            </div>
+
+            <button onclick="logoutUser()" class="mt-6 w-full text-center text-xs text-rose-600 font-bold hover:bg-rose-50 py-3 rounded-xl transition border border-rose-100">
+                Cerrar Sesión
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart & Reservation Slideover/Modal -->
+    <div id="modal-cart" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-end">
+        <div class="bg-white w-full max-w-md h-full flex flex-col justify-between p-6 overflow-y-auto shadow-2xl relative">
+            <div>
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <h3 class="font-serif text-xl font-bold text-slate-900"><i class="fa-solid fa-bag-shopping text-brand-600 mr-2"></i>Reserva de Servicios</h3>
+                    <button onclick="closeCartModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+
+                <!-- Selected Items Container -->
+                <div id="cart-items-container" class="py-4 space-y-4">
+                    <!-- Dynamic rendering of items in cart -->
+                </div>
+
+                <!-- Promo Code Box -->
+                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 my-4">
+                    <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Código Promocional</label>
+                    <div class="flex space-x-2">
+                        <input type="text" id="promo-input" placeholder="Ej: BEAUTY20" class="uppercase text-xs px-3 py-2 rounded-xl border border-slate-200 flex-grow focus:outline-none focus:border-brand-500">
+                        <button onclick="applyPromoCode()" class="bg-slate-900 text-white font-bold text-xs px-4 py-2 rounded-xl hover:bg-slate-800 transition">Aplicar</button>
+                    </div>
+                    <p id="promo-status-msg" class="text-[10px] mt-1 hidden"></p>
+                </div>
+            </div>
+
+            <!-- Footer Checkout Section -->
+            <div class="border-t border-slate-100 pt-4 space-y-3">
+                <div class="space-y-1.5 text-xs text-slate-600">
+                    <div class="flex justify-between">
+                        <span>Subtotal Servicios</span>
+                        <span id="summary-subtotal" class="font-semibold text-slate-900">S/ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-emerald-600 font-medium">
+                        <span>Descuento Código</span>
+                        <span id="summary-discount">- S/ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Costo de Transporte Domicilio</span>
+                        <span class="font-semibold text-emerald-600">GRATIS</span>
+                    </div>
+                    <div class="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-200">
+                        <span>Total Final</span>
+                        <span id="summary-total" class="text-brand-600">S/ 0.00</span>
+                    </div>
+                </div>
+
+                <button onclick="proceedToCheckout()" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 text-white font-bold text-sm py-3.5 rounded-xl shadow-lg shadow-brand-600/20 hover:shadow-brand-600/40 transition">
+                    Continuar al Pago y Datos <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-checkout" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 my-8">
+            <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="font-serif text-2xl font-bold text-slate-900 mb-6">Confirmación de Cita & Pasarela de Pago</h3>
+
+            <form id="checkout-form" onsubmit="handleFinalPayment(event)" class="space-y-6">
+                <!-- Tipo de Comprobante -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Comprobante de Pago</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="border border-slate-200 p-3 rounded-xl flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+                            <input type="radio" name="doc_type" value="boleta" checked onclick="toggleBillingFields('boleta')" class="text-brand-600">
+                            <span class="text-xs font-semibold text-slate-800">Boleta de Venta</span>
+                        </label>
+                        <label class="border border-slate-200 p-3 rounded-xl flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+                            <input type="radio" name="doc_type" value="factura" onclick="toggleBillingFields('factura')" class="text-brand-600">
+                            <span class="text-xs font-semibold text-slate-800">Factura Electrónica</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Factura Dynamic Extra Fields -->
+                <div id="factura-fields" class="hidden grid sm:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">RUC (11 Dígitos)</label>
+                        <input type="text" maxlength="11" id="billing-ruc" placeholder="10973412339" class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Razón Social</label>
+                        <input type="text" id="billing-rs" placeholder="German Ninaquispe S.A.C." class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200">
+                    </div>
+                </div>
+
+                <!-- Payment Method Selection -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Método de Pago Seguro</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <!-- Yape / Plin -->
+                        <label class="border border-slate-200 hover:border-brand-500 rounded-2xl p-3 flex flex-col items-center justify-center cursor-pointer text-center bg-slate-50 hover:bg-brand-50/30 transition">
+                            <input type="radio" name="payment_method" value="yape_plin" checked class="sr-only">
+                            <div class="flex items-center space-x-1 my-1">
+                                <span class="bg-purple-600 text-white font-extrabold text-[10px] px-2 py-0.5 rounded">YAPE</span>
+                                <span class="bg-cyan-500 text-white font-extrabold text-[10px] px-2 py-0.5 rounded">PLIN</span>
+                            </div>
+                            <span class="text-[11px] font-bold text-slate-700 mt-1">Billetera Digital</span>
+                        </label>
+
+                        <!-- Visa / Mastercard -->
+                        <label class="border border-slate-200 hover:border-brand-500 rounded-2xl p-3 flex flex-col items-center justify-center cursor-pointer text-center bg-slate-50 hover:bg-brand-50/30 transition">
+                            <input type="radio" name="payment_method" value="card" class="sr-only">
+                            <div class="flex items-center space-x-1 text-slate-700 my-1 text-base">
+                                <i class="fa-brands fa-cc-visa text-blue-800"></i>
+                                <i class="fa-brands fa-cc-mastercard text-red-600"></i>
+                            </div>
+                            <span class="text-[11px] font-bold text-slate-700 mt-1">Tarjeta Crédito/Débito</span>
+                        </label>
+
+                        <!-- BCP / BBVA / Interbank -->
+                        <label class="border border-slate-200 hover:border-brand-500 rounded-2xl p-3 flex flex-col items-center justify-center cursor-pointer text-center bg-slate-50 hover:bg-brand-50/30 transition">
+                            <input type="radio" name="payment_method" value="bank" class="sr-only">
+                            <i class="fa-solid fa-building-columns text-slate-700 text-lg my-1"></i>
+                            <span class="text-[11px] font-bold text-slate-700">BCP / BBVA / IBK</span>
+                        </label>
+
+                        <!-- Efectivo en Atención -->
+                        <label class="border border-slate-200 hover:border-brand-500 rounded-2xl p-3 flex flex-col items-center justify-center cursor-pointer text-center bg-slate-50 hover:bg-brand-50/30 transition">
+                            <input type="radio" name="payment_method" value="cash" class="sr-only">
+                            <i class="fa-solid fa-money-bill-wave text-emerald-600 text-lg my-1"></i>
+                            <span class="text-[11px] font-bold text-slate-700">Efectivo al Finalizar</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Final Submit button -->
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-4 rounded-xl shadow-xl shadow-brand-600/30 transition">
+                    Confirmar Reserva y Procesar Pago
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data Store
+        const SERVICES_DATA = [
+            // SPA & ESTETICA (MUJERES)
+            {
+                id: 's1',
+                category: 'spa',
+                title: 'Masaje Relajante & Aromaterapia Organica',
+                price: 120,
+                duration: '60 min',
+                image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=500',
+                desc: 'Masaje de cuerpo completo con aceites esenciales botánicos y esencias relajantes para liberar estrés acumuldado.',
+                specialists: ['esp_1', 'esp_2', 'esp_3']
+            },
+            {
+                id: 's2',
+                category: 'spa',
+                title: 'Limpieza Facial Profunda con Punta de Diamante',
+                price: 145,
+                duration: '75 min',
+                image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=500',
+                desc: 'Exfoliación con microdermoabrasión, extracción de impurezas, alta frecuencia y mascarilla descongestiva de colágeno.',
+                specialists: ['esp_4', 'esp_5']
+            },
+            {
+                id: 's3',
+                category: 'spa',
+                title: 'Manicure & Pedicure Spa con Esmaltado Semipermanente',
+                price: 110,
+                duration: '90 min',
+                image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=500',
+                desc: 'Tratamiento completo con exfoliación de sales marinas, parafina hidratante y acabado en gel UV de larga duración.',
+                specialists: ['esp_6', 'esp_7']
+            },
+            {
+                id: 's4',
+                category: 'spa',
+                title: 'Lifting & Laminado de Pestañas con Tinte Nutritivo',
+                price: 95,
+                duration: '50 min',
+                image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=500',
+                desc: 'Curvatura natural y nutrición profunda de pestañas con keratina botánica para una mirada curva e impactante.',
+                specialists: ['esp_8', 'esp_9']
+            },
+            {
+                id: 's5',
+                category: 'spa',
+                title: 'Masaje de Piedras Volcánicas Calientes',
+                price: 160,
+                duration: '75 min',
+                image: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&q=80&w=500',
+                desc: 'Terapia térmica de relajación que alivia dolores musculares profundos mediante la colocación estratégica de piedras volcánicas.',
+                specialists: ['esp_10', 'esp_1']
+            },
+            {
+                id: 's6',
+                category: 'spa',
+                title: 'Tratamiento Corporal Maderoterapia Reductora',
+                price: 150,
+                duration: '60 min',
+                image: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=500',
+                desc: 'Técnica holística de masaje con utensilios de madera diseñados para moldear la figura y drenar toxinas.',
+                specialists: ['esp_2', 'esp_3']
+            },
+
+            // BARBERIA & GROOMING (HOMBRES)
+            {
+                id: 'b1',
+                category: 'barber',
+                title: 'Corte de Cabello VIP & Diseños Fade Custom',
+                price: 65,
+                duration: '45 min',
+                image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=500',
+                desc: 'Corte estilizado según visagismo facial, lavado de cabello con shampoo mentolado y acabado con cera de fijación natural.',
+                specialists: ['esp_11', 'esp_12', 'esp_13']
+            },
+            {
+                id: 'b2',
+                category: 'barber',
+                title: 'Perfilado & Ritual de Barba con Toalla Caliente',
+                price: 55,
+                duration: '40 min',
+                image: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&q=80&w=500',
+                desc: 'Ritual tradicional de afeitado con vapor ozono, aceite hidratante, toalla caliente de lavanda y bálsamo revitalizante.',
+                specialists: ['esp_14', 'esp_15']
+            },
+            {
+                id: 'b3',
+                category: 'barber',
+                title: 'Combo Executive: Corte + Ritual de Barba + Mascarilla',
+                price: 110,
+                duration: '75 min',
+                image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=500',
+                desc: 'Servicio completo para caballeros que incluye corte de autor, perfilado de barba al navajín y mascarilla negra purificante.',
+                specialists: ['esp_16', 'esp_17']
+            },
+            {
+                id: 'b4',
+                category: 'barber',
+                title: 'Tinte & Matizado de Canas Masculino Natural',
+                price: 80,
+                duration: '50 min',
+                image: 'https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&q=80&w=500',
+                desc: 'Camuflaje progresivo de canas sin amoníaco que devuelve el tono natural con un brillo rejuvenecedor sin demarcaciones.',
+                specialists: ['esp_18', 'esp_19']
+            },
+            {
+                id: 'b5',
+                category: 'barber',
+                title: 'Limpieza Capilar Anticaída & Exfoliación de Cuero Cabelludo',
+                price: 90,
+                duration: '45 min',
+                image: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&q=80&w=500',
+                desc: 'Tratamiento desintoxicante capilar con tónico de biotin, masaje estimulante y luz infrarroja para fortalecer la raíz.',
+                specialists: ['esp_20', 'esp_11']
+            },
+            {
+                id: 'b6',
+                category: 'barber',
+                title: 'Corte Dúo Padre e Hijo Domicilio',
+                price: 105,
+                duration: '70 min',
+                image: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&q=80&w=500',
+                desc: 'Atención simultánea o consecutiva para papá e hijo con peinados combinados y bebidas de cortesía incluidas.',
+                specialists: ['esp_12', 'esp_13']
+            }
+        ];
+
+        const SPECIALISTS_DATA = [
+            { id: 'esp_1', name: 'Valeria Mendoza', role: 'Cosmiatra Master', exp: '8 años exp.', rating: '4.95', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_2', name: 'Camila Alarcón', role: 'Terapeuta Holística', exp: '6 años exp.', rating: '4.90', photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_3', name: 'Sofia Benavides', role: 'Especialista Corporal', exp: '7 años exp.', rating: '4.92', photo: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_4', name: 'Luciana Paredes', role: 'Cosmiatra & Dermo', exp: '5 años exp.', rating: '4.88', photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_5', name: 'Andrea Del Rosario', role: 'Especialista en Piel', exp: '9 años exp.', rating: '4.98', photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_6', name: 'Gabriela Quispe', role: 'Nail Artist Senior', exp: '4 años exp.', rating: '4.85', photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_7', name: 'Fiorella Carranza', role: 'Podóloga & Spa Feet', exp: '6 años exp.', rating: '4.91', photo: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_8', name: 'Natalia Ramos', role: 'Lash & Brow Stylist', exp: '5 años exp.', rating: '4.89', photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_9', name: 'Daniela Salazar', role: 'Mirada Specialist', exp: '4 años exp.', rating: '4.87', photo: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_10', name: 'Rosa María Ugarte', role: 'Masoterapeuta VIP', exp: '10 años exp.', rating: '4.99', photo: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=crop&q=80&w=300' },
+
+            // BARBEROS
+            { id: 'esp_11', name: 'Mateo Holguín', role: 'Master Barber Fade', exp: '7 años exp.', rating: '4.96', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_12', name: 'Carlos "Fade" Ruiz', role: 'Estilista de Autor', exp: '6 años exp.', rating: '4.92', photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_13', name: 'Diego Santillán', role: 'Grooming Expert', exp: '8 años exp.', rating: '4.94', photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_14', name: 'Javier Montalvo', role: 'Especialista en Barba', exp: '5 años exp.', rating: '4.88', photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_15', name: 'Rodrigo Belsuzarri', role: 'Barbero Tradicional', exp: '9 años exp.', rating: '4.97', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_16', name: 'Esteban Coronado', role: 'Visagista Masculino', exp: '6 años exp.', rating: '4.91', photo: 'https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_17', name: 'Gonzalo Fernández', role: 'Stylist & Colorista', exp: '7 años exp.', rating: '4.93', photo: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_18', name: 'Alejandro Peña', role: 'Colorimetría Capilar', exp: '8 años exp.', rating: '4.90', photo: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_19', name: 'Sebastián Barreto', role: 'Tratamientos Capilares', exp: '5 años exp.', rating: '4.86', photo: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&q=80&w=300' },
+            { id: 'esp_20', name: 'Lucas Delgado', role: 'Terapeuta Capilar', exp: '6 años exp.', rating: '4.89', photo: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=300' }
+        ];
+
+        // State variables
+        let cart = []; // Array of { serviceId, specialistId, price, date, time }
+        let currentFilter = 'all';
+        let appliedPromo = null; // { code: 'BEAUTY20', discountPercent: 20 }
+        let currentUser = null; // Real German Ninaquispe User Data
+
+        // Initializer
+        window.onload = function() {
+            renderServices();
+            renderSpecialists();
+            updateCartUI();
+        };
+
+        function renderServices() {
+            const container = document.getElementById('services-grid');
+            container.innerHTML = '';
+
+            const filtered = SERVICES_DATA.filter(s => currentFilter === 'all' || s.category === currentFilter);
+
+            filtered.forEach(service => {
+                // Find eligible specialists
+                const specialistsList = service.specialists.map(id => SPECIALISTS_DATA.find(sp => sp.id === id)).filter(Boolean);
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover:shadow-xl transition duration-300 flex flex-col justify-between";
+                
+                let specsOptionsHTML = specialistsList.map(sp => `<option value="${sp.id}">${sp.name} (${sp.rating} ★)</option>`).join('');
+
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${service.image}" alt="${service.title}" class="w-full h-full object-cover transition transform hover:scale-105 duration-500">
+                            <span class="absolute top-4 left-4 ${service.category === 'spa' ? 'bg-brand-600' : 'bg-amber-600'} text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                                ${service.category === 'spa' ? 'Spa Mujeres' : 'Barbería Hombres'}
+                            </span>
+                            <span class="absolute bottom-4 right-4 bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-xl">
+                                <i class="fa-regular fa-clock mr-1"></i>${service.duration}
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg text-slate-900 leading-snug">${service.title}</h3>
+                            <p class="text-xs text-slate-500 mt-2 line-clamp-2">${service.desc}</p>
+                            
+                            <!-- Specialist Selection -->
+                            <div class="mt-4 pt-4 border-t border-slate-100">
+                                <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Especialista Asignado:</label>
+                                <select id="select-spec-${service.id}" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:border-brand-500">
+                                    ${specsOptionsHTML}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between mt-2">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase">Precio Servicio</span>
+                            <span class="text-xl font-extrabold text-slate-900">S/ ${service.price.toFixed(2)}</span>
+                        </div>
+                        <button onclick="addToCart('${service.id}')" class="bg-slate-900 hover:bg-brand-600 text-white p-3 rounded-2xl transition shadow-md">
+                            <i class="fa-solid fa-plus text-sm"></i> Agregar
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderSpecialists() {
+            const container = document.getElementById('specialists-grid');
+            container.innerHTML = '';
+
+            SPECIALISTS_DATA.slice(0, 8).forEach(spec => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4";
+                card.innerHTML = `
+                    <img src="${spec.photo}" alt="${spec.name}" class="w-14 h-14 rounded-2xl object-cover shadow">
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-900">${spec.name}</h4>
+                        <p class="text-[11px] font-semibold text-brand-600">${spec.role}</p>
+                        <div class="flex items-center space-x-2 mt-1">
+                            <span class="text-xs font-bold text-amber-500">★ ${spec.rating}</span>
+                            <span class="text-[10px] text-slate-400">• ${spec.exp}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterServices(category) {
+            currentFilter = category;
+            
+            // Toggle active classes on buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = "filter-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200";
+            });
+
+            const activeBtn = document.getElementById(`btn-filter-${category}`);
+            if (activeBtn) {
+                activeBtn.className = "filter-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-brand-600 text-white";
+            }
+
+            renderServices();
+        }
+
+        function addToCart(serviceId) {
+            const service = SERVICES_DATA.find(s => s.id === serviceId);
+            const selectElem = document.getElementById(`select-spec-${serviceId}`);
+            const selectedSpecId = selectElem ? selectElem.value : service.specialists[0];
+            const specialist = SPECIALISTS_DATA.find(sp => sp.id === selectedSpecId);
+
+            cart.push({
+                cartItemId: Date.now() + Math.random(),
+                service: service,
+                specialist: specialist
+            });
+
+            updateCartUI();
+            openCartModal();
+        }
+
+        function removeFromCart(cartItemId) {
+            cart = cart.filter(item => item.cartItemId !== cartItemId);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartContainer = document.getElementById('cart-items-container');
+            const cartBadge = document.getElementById('cart-badge');
+
+            if (cart.length > 0) {
+                cartBadge.innerText = cart.length;
+                cartBadge.classList.remove('hidden');
+            } else {
+                cartBadge.classList.add('hidden');
+            }
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fa-solid fa-basket-shopping text-4xl text-slate-300 mb-2"></i>
+                        <p class="text-xs text-slate-500">Aún no has añadido servicios al carrito.</p>
+                    </div>
+                `;
+            } else {
+                cartContainer.innerHTML = cart.map(item => `
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 relative flex justify-between items-start">
+                        <div class="pr-6">
+                            <h4 class="font-bold text-xs text-slate-900">${item.service.title}</h4>
+                            <p class="text-[11px] text-brand-600 font-semibold mt-0.5"><i class="fa-solid fa-user-check mr-1"></i>${item.specialist.name}</p>
+                            <span class="text-xs font-extrabold text-slate-800 mt-2 block">S/ ${item.service.price.toFixed(2)}</span>
+                        </div>
+                        <button onclick="removeFromCart(${item.cartItemId})" class="text-slate-400 hover:text-rose-600 text-sm p-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + item.service.price, 0);
+            let discountAmount = 0;
+
+            if (appliedPromo) {
+                discountAmount = (subtotal * appliedPromo.discountPercent) / 100;
+            }
+
+            const total = subtotal - discountAmount;
+
+            document.getElementById('summary-subtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('summary-discount').innerText = `- S/ ${discountAmount.toFixed(2)}`;
+            document.getElementById('summary-total').innerText = `S/ ${total.toFixed(2)}`;
+        }
+
+        function applyPromoCode() {
+            const input = document.getElementById('promo-input').value.trim().toUpperCase();
+            const msg = document.getElementById('promo-status-msg');
+
+            msg.classList.remove('hidden');
+
+            if (input === 'BEAUTY20') {
+                appliedPromo = { code: 'BEAUTY20', discountPercent: 20 };
+                msg.className = "text-[10px] mt-1 text-emerald-600 font-bold";
+                msg.innerText = "¡Código BEAUTY20 aplicado! (-20% Descuento)";
+            } else if (input === 'PRIMERACITA' || input === 'SPA10') {
+                appliedPromo = { code: input, discountPercent: 10 };
+                msg.className = "text-[10px] mt-1 text-emerald-600 font-bold";
+                msg.innerText = `¡Código ${input} aplicado! (-10% Descuento)`;
+            } else {
+                appliedPromo = null;
+                msg.className = "text-[10px] mt-1 text-rose-500 font-bold";
+                msg.innerText = "Código no válido o expirado.";
+            }
+
+            calculateTotals();
+        }
+
+        function autofillGermanData() {
+            document.getElementById('login-email').value = 'german.ninaquispe@usil.pe';
+            document.getElementById('login-phone').value = '+51 973 412 339';
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const phone = document.getElementById('login-phone').value.trim();
+
+            // Set logged user data
+            currentUser = {
+                name: "German Ninaquispe Senmache",
+                email: email,
+                phone: phone,
+                address: "Av. Javier Prado Este 2465, San Borja, Lima",
+                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
+            };
+
+            // Update UI elements for logged user
+            document.getElementById('user-name-display').innerText = "German N.";
+            document.getElementById('user-avatar').src = currentUser.avatar;
+            document.getElementById('login-nav-btn').classList.add('hidden');
+            document.getElementById('user-profile-btn').classList.remove('hidden');
+
+            // Populate Modal Profile
+            document.getElementById('profile-name-modal').innerText = currentUser.name;
+            document.getElementById('profile-email-modal').innerText = currentUser.email;
+            document.getElementById('profile-phone-modal').innerText = currentUser.phone;
+            document.getElementById('profile-address-modal').innerText = currentUser.address;
+            document.getElementById('profile-avatar-modal').src = currentUser.avatar;
+
+            closeLoginModal();
+            alert("¡Bienvenido de vuelta, German Ninaquispe! Tu sesión está activa.");
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            document.getElementById('user-profile-btn').classList.add('hidden');
+            document.getElementById('login-nav-btn').classList.remove('hidden');
+            closeProfileModal();
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert("Por favor selecciona al menos un servicio antes de proceder.");
+                return;
+            }
+            if (!currentUser) {
+                openLoginModal();
+                alert("Por favor inicia sesión con tus datos para registrar la cita.");
+                return;
+            }
+
+            closeCartModal();
+            document.getElementById('modal-checkout').classList.remove('hidden');
+        }
+
+        function toggleBillingFields(type) {
+            const fields = document.getElementById('factura-fields');
+            if (type === 'factura') {
+                fields.classList.remove('hidden');
+            } else {
+                fields.classList.add('hidden');
+            }
+        }
+
+        function handleFinalPayment(e) {
+            e.preventDefault();
+            
+            closeCheckoutModal();
+            
+            // Reset cart
+            cart = [];
+            updateCartUI();
+
+            alert("¡Reserva Confirmada Exitosamente!\n\nHemos enviado la confirmación y el comprobante electrónico a german.ninaquispe@usil.pe.\nNuestros especialistas se presentarán en la dirección indicada a la hora solicitada.");
+        }
+
+        // Navigation and Modals UI Handlers
+        function navigateTo(section) {
+            const sec = document.getElementById(`sec-${section}`);
+            if (sec) {
+                sec.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function openLoginModal() { document.getElementById('modal-login').classList.remove('hidden'); }
+        function closeLoginModal() { document.getElementById('modal-login').classList.add('hidden'); }
+        function openProfileModal() { document.getElementById('modal-profile').classList.remove('hidden'); }
+        function closeProfileModal() { document.getElementById('modal-profile').classList.add('hidden'); }
+        function openCartModal() { document.getElementById('modal-cart').classList.remove('hidden'); }
+        function closeCartModal() { document.getElementById('modal-cart').classList.add('hidden'); }
+        function closeCheckoutModal() { document.getElementById('modal-checkout').classList.hidden = true; document.getElementById('modal-checkout').classList.add('hidden'); }
+    </script>
+</body>
+</html>
