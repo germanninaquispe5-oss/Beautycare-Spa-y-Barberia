@@ -79,9 +79,10 @@
 
             <!-- Nav Links -->
             <nav class="hidden md:flex items-center space-x-8 font-medium text-sm text-slate-600">
+                <button onclick="navigateTo('about')" class="hover:text-brand-600 transition">Nuestra Historia</button>
                 <button onclick="navigateTo('services')" class="hover:text-brand-600 transition">Catálogo de Servicios</button>
                 <button onclick="navigateTo('specialists')" class="hover:text-brand-600 transition">Nuestros Especialistas</button>
-                <button onclick="navigateTo('coverage')" class="hover:text-brand-600 transition"><i class="fa-solid fa-location-dot text-brand-500 mr-1.5"></i>Cobertura Lima</button>
+                <button onclick="navigateTo('coverage')" class="hover:text-brand-600 transition"><i class="fa-solid fa-location-dot text-brand-500 mr-1.5"></i>Cobertura y Delivery</button>
             </nav>
 
             <!-- User Menu / Cart -->
@@ -112,7 +113,7 @@
                     <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
                         <div class="inline-flex items-center space-x-2 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-bold px-4 py-2 rounded-full shadow-sm">
                             <span class="flex h-2 w-2 rounded-full bg-brand-500 animate-ping"></span>
-                            <span>Servicio de Spa & Barbería VIP a Domicilio en Lima</span>
+                            <span>Spa & Barbería VIP a Domicilio en Lima, Callao y Lima Provincias</span>
                         </div>
                         <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
                             Tu espacio de bienestar personal, <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-brand-500 to-amber-500">donde tú estés.</span>
@@ -175,11 +176,85 @@
             </div>
         </section>
 
+        <section id="sec-about" class="py-20 bg-gradient-to-b from-white to-brand-50/40 border-t border-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+                <!-- Nuestra Historia -->
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-5 order-2 lg:order-1">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=800" alt="Barbero atendiendo a un cliente" class="rounded-3xl shadow-xl w-full aspect-[4/5] object-cover">
+                            <div class="absolute -bottom-6 -right-4 sm:-right-6 bg-white rounded-2xl shadow-lg border border-slate-100 p-4 max-w-[220px]">
+                                <p class="font-serif text-2xl font-bold text-brand-600">De una agenda de papel</p>
+                                <p class="text-[11px] text-slate-500 mt-1">a una plataforma de reservas en línea.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-7 order-1 lg:order-2 space-y-5">
+                        <span class="text-brand-600 text-xs font-extrabold uppercase tracking-widest">Nuestra Historia</span>
+                        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">Nacimos dentro de una barbería, entre tijeras, toallas calientes y un cuaderno lleno de tachones.</h2>
+                        <p class="text-slate-600 leading-relaxed">
+                            BeautyCare empezó como la idea de un pequeño equipo que conocía de cerca el día a día de los salones de belleza y barberías de Lima. Veíamos el mismo problema todo el tiempo: estilistas y barberos con mucho talento que perdían horas coordinando citas por WhatsApp, devolviendo llamadas y corrigiendo horarios cruzados en una agenda de papel.
+                        </p>
+                        <p class="text-slate-600 leading-relaxed">
+                            A la vez, cada vez más clientes nos decían lo mismo: entre el tráfico y el trabajo, ir al salón les costaba tiempo que no tenían. Así llegamos a nuestra propuesta: llevar el spa y la barbería a la puerta de tu casa u oficina, con una reserva tan simple como pedir comida por una app.
+                        </p>
+                        <p class="text-slate-600 leading-relaxed">
+                            Construimos la plataforma por etapas, con la metodología ágil <strong>SCRUM</strong>. Trabajamos en sprints de dos semanas, junto con dueños de salones y barberías, para que cada mejora resolviera un problema real. Hoy nuestros especialistas atienden en Lima Metropolitana, el Callao y las principales ciudades de Lima Provincias.
+                        </p>
+                        <div class="grid sm:grid-cols-3 gap-4 pt-4">
+                            <div class="bg-white rounded-2xl border border-slate-200 p-4">
+                                <i class="fa-solid fa-lightbulb text-amber-500 text-lg"></i>
+                                <h4 class="font-bold text-sm text-slate-900 mt-2">La idea</h4>
+                                <p class="text-xs text-slate-500 mt-1">Vimos el desorden de las citas manuales desde adentro.</p>
+                            </div>
+                            <div class="bg-white rounded-2xl border border-slate-200 p-4">
+                                <i class="fa-solid fa-people-group text-brand-500 text-lg"></i>
+                                <h4 class="font-bold text-sm text-slate-900 mt-2">El equipo</h4>
+                                <p class="text-xs text-slate-500 mt-1">UX/UI, desarrollo y QA, junto con dueños de salones.</p>
+                            </div>
+                            <div class="bg-white rounded-2xl border border-slate-200 p-4">
+                                <i class="fa-solid fa-truck-fast text-emerald-500 text-lg"></i>
+                                <h4 class="font-bold text-sm text-slate-900 mt-2">A domicilio</h4>
+                                <p class="text-xs text-slate-500 mt-1">Llevamos el salón a tu casa u oficina.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Por qué la creamos -->
+                <div>
+                    <div class="text-center max-w-3xl mx-auto mb-10">
+                        <span class="text-brand-600 text-xs font-extrabold uppercase tracking-widest">¿Por qué creamos BeautyCare?</span>
+                        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-2">La necesidad: poner orden en las citas</h2>
+                        <p class="text-slate-500 text-sm mt-3">La mayoría de los salones y barberías todavía gestionan sus reservas de forma manual. Eso genera tres problemas que afectan tanto al negocio como al cliente.</p>
+                    </div>
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-7">
+                            <h3 class="font-serif text-xl font-bold text-slate-900 mb-5"><i class="fa-solid fa-triangle-exclamation text-rose-500 mr-2"></i>El contexto y el desafío</h3>
+                            <ul class="space-y-4 text-sm text-slate-600">
+                                <li class="flex"><span class="w-8 h-8 shrink-0 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center mr-3"><i class="fa-solid fa-shuffle"></i></span><span><strong class="text-slate-900">Desorden:</strong> las citas se agendan por WhatsApp, por llamada o en un cuaderno, y los horarios terminan cruzándose.</span></li>
+                                <li class="flex"><span class="w-8 h-8 shrink-0 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center mr-3"><i class="fa-solid fa-calendar-xmark"></i></span><span><strong class="text-slate-900">Pérdidas:</strong> hay clientes que olvidan su cita y espacios que quedan vacíos en la agenda.</span></li>
+                                <li class="flex"><span class="w-8 h-8 shrink-0 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center mr-3"><i class="fa-solid fa-clock-rotate-left"></i></span><span><strong class="text-slate-900">Sin historial:</strong> nadie recuerda qué servicio recibió cada cliente ni cuáles son sus preferencias.</span></li>
+                            </ul>
+                        </div>
+                        <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white rounded-3xl shadow-lg shadow-brand-600/20 p-7">
+                            <h3 class="font-serif text-xl font-bold mb-5"><i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-2"></i>Nuestra solución: un "PedidosYa" de la belleza</h3>
+                            <ul class="space-y-4 text-sm text-brand-50">
+                                <li class="flex"><span class="w-8 h-8 shrink-0 rounded-xl bg-white/15 flex items-center justify-center mr-3"><i class="fa-solid fa-mobile-screen"></i></span><span><strong class="text-white">La idea:</strong> una web/app donde eliges el servicio, el especialista y el horario, y reservas en segundos.</span></li>
+                                <li class="flex"><span class="w-8 h-8 shrink-0 rounded-xl bg-white/15 flex items-center justify-center mr-3"><i class="fa-solid fa-list-check"></i></span><span><strong class="text-white">Qué incluye:</strong> catálogo de servicios, horarios disponibles, registro de clientes y confirmación de cada cita.</span></li>
+                                <li class="flex"><span class="w-8 h-8 shrink-0 rounded-xl bg-white/15 flex items-center justify-center mr-3"><i class="fa-solid fa-rocket"></i></span><span><strong class="text-white">Primera versión:</strong> lo esencial primero: registrarte, ver los servicios y reservar tu cita. Después llegan la reprogramación, la cancelación, los recordatorios y el historial de atenciones.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="sec-services" class="py-16 bg-white border-t border-slate-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-10">
                     <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Catálogo de Servicios Premium</h2>
-                    <p class="text-slate-500 text-sm mt-2">Selecciona uno o varios tratamientos para tu cita a domicilio en Lima</p>
+                    <p class="text-slate-500 text-sm mt-2">Selecciona uno o varios tratamientos para tu cita a domicilio en Lima, Callao o Lima Provincias</p>
                     
                     <!-- Filter Buttons -->
                     <div class="flex justify-center space-x-2 mt-6">
@@ -215,48 +290,69 @@
         </section>
 
         <section id="sec-coverage" class="py-16 bg-white border-t border-slate-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-5 space-y-4">
-                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Lima Metropolitana</span>
-                        <h2 class="font-serif text-3xl font-bold text-slate-900">Zonas con Cobertura VIP Inmediata</h2>
-                        <p class="text-slate-600 text-sm">
-                            Llegamos a tu domicilio, departamento u oficina equipados con camillas plegables, toallas esterilizadas, lámparas de luz LED y productos de gama alta.
-                        </p>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+                <div class="text-center max-w-2xl mx-auto">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Lima · Callao · Lima Provincias</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-3">Cobertura y Costo de Delivery</h2>
+                    <p class="text-slate-600 text-sm mt-2">
+                        Llegamos a tu casa, departamento u oficina con camillas plegables, toallas esterilizadas, lámparas LED y productos de gama alta. El costo de traslado depende de tu zona.
+                    </p>
+                </div>
 
-                        <div class="grid grid-cols-2 gap-3 pt-2">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs font-semibold text-slate-700 flex items-center">
-                                <i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Miraflores & San Isidro
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs font-semibold text-slate-700 flex items-center">
-                                <i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Santiago de Surco & La Molina
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs font-semibold text-slate-700 flex items-center">
-                                <i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> San Borja & Barranco
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs font-semibold text-slate-700 flex items-center">
-                                <i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Jesús María & Magdalena
-                            </div>
+                <!-- Tarifas por zona -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="rounded-3xl border border-slate-200 p-6 bg-slate-50">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900"><i class="fa-solid fa-city text-brand-500 mr-2"></i>Lima Metropolitana</h3>
+                            <span class="bg-brand-600 text-white text-sm font-extrabold px-3 py-1 rounded-xl">S/ 6</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-3">Tarifa única para los 43 distritos de Lima Metropolitana.</p>
+                        <p id="zone-list-lima" class="text-[11px] text-slate-600 mt-3 leading-relaxed"></p>
+                    </div>
+                    <div class="rounded-3xl border border-slate-200 p-6 bg-slate-50">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900"><i class="fa-solid fa-anchor text-sky-500 mr-2"></i>Callao</h3>
+                            <span class="bg-sky-600 text-white text-sm font-extrabold px-3 py-1 rounded-xl">S/ 10</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-3">Tarifa única para los 7 distritos de la Provincia Constitucional del Callao.</p>
+                        <p id="zone-list-callao" class="text-[11px] text-slate-600 mt-3 leading-relaxed"></p>
+                    </div>
+                    <div class="rounded-3xl border border-slate-200 p-6 bg-slate-50">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900"><i class="fa-solid fa-mountain-sun text-amber-500 mr-2"></i>Lima Provincias</h3>
+                            <span class="bg-amber-500 text-white text-sm font-extrabold px-3 py-1 rounded-xl">S/ 10 – 15</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-3">El costo varía según la distancia del distrito al Centro de Lima. Revisa la tabla de abajo.</p>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-8 items-start">
+                    <!-- Tabla Lima Provincias -->
+                    <div class="lg:col-span-7 rounded-3xl border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-900 text-white px-5 py-3 text-sm font-bold"><i class="fa-solid fa-route text-amber-400 mr-2"></i>Tarifas en Lima Provincias (distancia aprox. desde el Centro de Lima)</div>
+                        <div class="max-h-96 overflow-y-auto">
+                            <table class="w-full text-xs">
+                                <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] sticky top-0">
+                                    <tr><th class="text-left px-5 py-2">Distrito / Ciudad</th><th class="text-left px-3 py-2">Provincia</th><th class="text-right px-3 py-2">Distancia</th><th class="text-right px-5 py-2">Delivery</th></tr>
+                                </thead>
+                                <tbody id="provincias-table" class="divide-y divide-slate-100"></tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <!-- Simulated Google Maps Preview -->
-                    <div class="lg:col-span-7 bg-slate-900 rounded-3xl h-96 relative overflow-hidden shadow-xl border border-slate-800">
-                        <div class="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-77.0305,-12.0931,12,0/800x500?access_token=pk.dummy')] bg-cover bg-center opacity-60"></div>
-                        <!-- Overlay Graphic elements simulating map pins -->
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="relative w-full h-full p-8 flex flex-col justify-between">
-                                <div class="bg-white/90 backdrop-blur p-3 rounded-2xl max-w-xs shadow-md border border-white">
-                                    <p class="text-xs font-bold text-slate-900"><i class="fa-solid fa-location-crosshairs text-brand-600 mr-1.5"></i> Dirección Seleccionada:</p>
-                                    <p id="map-address-preview" class="text-xs text-slate-600 mt-0.5">Av. Javier Prado Este 2465, San Borja, Lima</p>
-                                </div>
-                                <div class="flex justify-end">
-                                    <span class="bg-slate-900/90 text-white text-[11px] px-3 py-1.5 rounded-xl border border-slate-700">
-                                        <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Tiempo de llegada est.: 45 min
-                                    </span>
-                                </div>
+                    <!-- Calculadora -->
+                    <div class="lg:col-span-5 bg-slate-900 rounded-3xl p-6 text-white shadow-xl">
+                        <h3 class="font-serif text-xl font-bold"><i class="fa-solid fa-location-crosshairs text-brand-400 mr-2"></i>Consulta tu delivery</h3>
+                        <p class="text-xs text-slate-400 mt-1">Elige tu distrito para ver el costo de traslado.</p>
+                        <select id="coverage-district-select" onchange="setDeliveryDistrict(this.value)" class="district-select mt-4 w-full text-sm bg-white text-slate-800 rounded-xl px-3 py-3 focus:outline-none"></select>
+                        <div class="mt-5 bg-white/10 rounded-2xl p-4 flex items-center justify-between">
+                            <div>
+                                <p class="text-[11px] text-slate-400 uppercase font-bold">Costo de delivery</p>
+                                <p id="coverage-delivery-zone" class="text-xs text-slate-300 mt-0.5">Selecciona un distrito</p>
                             </div>
+                            <span id="coverage-delivery-price" class="font-extrabold text-2xl text-amber-400">--</span>
                         </div>
+                        <p class="text-[11px] text-slate-400 mt-4"><i class="fa-solid fa-circle-info mr-1"></i>El costo de delivery se cobra una sola vez por reserva, sin importar cuántos servicios agregues.</p>
                     </div>
                 </div>
             </div>
@@ -371,6 +467,12 @@
                     </div>
                     <p id="promo-status-msg" class="text-[10px] mt-1 hidden"></p>
                 </div>
+
+                <!-- Delivery District -->
+                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 my-4">
+                    <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1"><i class="fa-solid fa-location-dot text-brand-500 mr-1"></i>Distrito de atención</label>
+                    <select id="cart-district-select" onchange="setDeliveryDistrict(this.value)" class="district-select w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-500"></select>
+                </div>
             </div>
 
             <!-- Footer Checkout Section -->
@@ -385,8 +487,8 @@
                         <span id="summary-discount">- S/ 0.00</span>
                     </div>
                     <div class="flex justify-between text-slate-500">
-                        <span>Costo de Transporte Domicilio</span>
-                        <span class="font-semibold text-emerald-600">GRATIS</span>
+                        <span>Delivery <span id="summary-delivery-zone" class="text-[10px] text-slate-400"></span></span>
+                        <span id="summary-delivery" class="font-semibold text-slate-900">--</span>
                     </div>
                     <div class="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-200">
                         <span>Total Final</span>
@@ -638,6 +740,41 @@
             { id: 'esp_20', name: 'Lucas Delgado', role: 'Terapeuta Capilar', exp: '6 años exp.', rating: '4.89', photo: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=300' }
         ];
 
+        // Delivery zones (S/). Lima Provincias priced by approx. distance (km) from Centro de Lima
+        const LIMA_DISTRICTS = ['Ancón', 'Ate', 'Barranco', 'Breña', 'Carabayllo', 'Chaclacayo', 'Chorrillos', 'Cieneguilla', 'Comas', 'El Agustino', 'Independencia', 'Jesús María', 'La Molina', 'La Victoria', 'Lima (Cercado)', 'Lince', 'Los Olivos', 'Lurigancho-Chosica', 'Lurín', 'Magdalena del Mar', 'Miraflores', 'Pachacámac', 'Pucusana', 'Pueblo Libre', 'Puente Piedra', 'Punta Hermosa', 'Punta Negra', 'Rímac', 'San Bartolo', 'San Borja', 'San Isidro', 'San Juan de Lurigancho', 'San Juan de Miraflores', 'San Luis', 'San Martín de Porres', 'San Miguel', 'Santa Anita', 'Santa María del Mar', 'Santa Rosa', 'Santiago de Surco', 'Surquillo', 'Villa El Salvador', 'Villa María del Triunfo'];
+        const CALLAO_DISTRICTS = ['Bellavista', 'Callao (Cercado)', 'Carmen de la Legua-Reynoso', 'La Perla', 'La Punta', 'Mi Perú', 'Ventanilla'];
+        const PROVINCIAS_DISTRICTS = [
+            { name: 'Santa Eulalia', province: 'Huarochirí', km: 45, price: 10 },
+            { name: 'Ricardo Palma', province: 'Huarochirí', km: 40, price: 10 },
+            { name: 'Mala', province: 'Cañete', km: 85, price: 11 },
+            { name: 'Matucana', province: 'Huarochirí', km: 75, price: 11 },
+            { name: 'Huaral', province: 'Huaral', km: 75, price: 11 },
+            { name: 'Chancay', province: 'Huaral', km: 80, price: 11 },
+            { name: 'Aucallama', province: 'Huaral', km: 85, price: 11 },
+            { name: 'Canta', province: 'Canta', km: 100, price: 12 },
+            { name: 'Asia', province: 'Cañete', km: 100, price: 12 },
+            { name: 'San Antonio (Cañete)', province: 'Cañete', km: 110, price: 12 },
+            { name: 'Imperial', province: 'Cañete', km: 145, price: 13 },
+            { name: 'San Vicente de Cañete', province: 'Cañete', km: 145, price: 13 },
+            { name: 'Cerro Azul', province: 'Cañete', km: 130, price: 13 },
+            { name: 'Huaura', province: 'Huaura', km: 145, price: 13 },
+            { name: 'Huacho', province: 'Huaura', km: 150, price: 13 },
+            { name: 'Sayán', province: 'Huaura', km: 190, price: 14 },
+            { name: 'Supe', province: 'Barranca', km: 185, price: 14 },
+            { name: 'Barranca', province: 'Barranca', km: 190, price: 14 },
+            { name: 'Paramonga', province: 'Barranca', km: 205, price: 15 },
+            { name: 'Yauyos', province: 'Yauyos', km: 280, price: 15 },
+            { name: 'Oyón', province: 'Oyón', km: 300, price: 15 },
+            { name: 'Cajatambo', province: 'Cajatambo', km: 340, price: 15 }
+        ].sort((a, b) => a.km - b.km);
+
+        const DELIVERY_ZONES = {};
+        LIMA_DISTRICTS.forEach(d => DELIVERY_ZONES[d] = { zone: 'Lima', price: 6 });
+        CALLAO_DISTRICTS.forEach(d => DELIVERY_ZONES[d] = { zone: 'Callao', price: 10 });
+        PROVINCIAS_DISTRICTS.forEach(d => DELIVERY_ZONES[d.name] = { zone: 'Lima Provincias', price: d.price });
+
+        let selectedDistrict = '';
+
         // State variables
         let cart = []; // Array of { serviceId, specialistId, price, date, time }
         let currentFilter = 'all';
@@ -648,6 +785,7 @@
         window.onload = function() {
             renderServices();
             renderSpecialists();
+            renderCoverage();
             updateCartUI();
         };
 
@@ -799,6 +937,41 @@
             calculateTotals();
         }
 
+        function renderCoverage() {
+            document.getElementById('zone-list-lima').innerText = LIMA_DISTRICTS.join(' · ');
+            document.getElementById('zone-list-callao').innerText = CALLAO_DISTRICTS.join(' · ');
+            document.getElementById('provincias-table').innerHTML = PROVINCIAS_DISTRICTS.map(d => `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-2 font-semibold text-slate-800">${d.name}</td>
+                    <td class="px-3 py-2 text-slate-500">${d.province}</td>
+                    <td class="px-3 py-2 text-right text-slate-500">~${d.km} km</td>
+                    <td class="px-5 py-2 text-right font-bold text-amber-600">S/ ${d.price.toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            const options = (list) => list.map(name => `<option value="${name}">${name} — S/ ${DELIVERY_ZONES[name].price}</option>`).join('');
+            const html = `<option value="">Selecciona tu distrito...</option>
+                <optgroup label="Lima Metropolitana (S/ 6)">${options(LIMA_DISTRICTS)}</optgroup>
+                <optgroup label="Callao (S/ 10)">${options(CALLAO_DISTRICTS)}</optgroup>
+                <optgroup label="Lima Provincias (S/ 10 – 15)">${options(PROVINCIAS_DISTRICTS.map(d => d.name))}</optgroup>`;
+            document.querySelectorAll('.district-select').forEach(sel => sel.innerHTML = html);
+        }
+
+        function setDeliveryDistrict(name) {
+            selectedDistrict = DELIVERY_ZONES[name] ? name : '';
+            document.querySelectorAll('.district-select').forEach(sel => sel.value = selectedDistrict);
+
+            const zone = DELIVERY_ZONES[selectedDistrict];
+            document.getElementById('coverage-delivery-price').innerText = zone ? `S/ ${zone.price.toFixed(2)}` : '--';
+            document.getElementById('coverage-delivery-zone').innerText = zone ? `${selectedDistrict} · ${zone.zone}` : 'Selecciona un distrito';
+            calculateTotals();
+        }
+
+        function getDeliveryCost() {
+            const zone = DELIVERY_ZONES[selectedDistrict];
+            return zone && cart.length > 0 ? zone.price : 0;
+        }
+
         function calculateTotals() {
             const subtotal = cart.reduce((sum, item) => sum + item.service.price, 0);
             let discountAmount = 0;
@@ -807,7 +980,12 @@
                 discountAmount = (subtotal * appliedPromo.discountPercent) / 100;
             }
 
-            const total = subtotal - discountAmount;
+            const delivery = getDeliveryCost();
+            const total = subtotal - discountAmount + delivery;
+            const zone = DELIVERY_ZONES[selectedDistrict];
+
+            document.getElementById('summary-delivery').innerText = zone ? `S/ ${delivery.toFixed(2)}` : 'Elige tu distrito';
+            document.getElementById('summary-delivery-zone').innerText = zone ? `(${selectedDistrict})` : '';
 
             document.getElementById('summary-subtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
             document.getElementById('summary-discount').innerText = `- S/ ${discountAmount.toFixed(2)}`;
@@ -883,6 +1061,11 @@
         function proceedToCheckout() {
             if (cart.length === 0) {
                 alert("Por favor selecciona al menos un servicio antes de proceder.");
+                return;
+            }
+            if (!selectedDistrict) {
+                alert("Por favor selecciona tu distrito de atención para calcular el costo de delivery.");
+                document.getElementById('cart-district-select').focus();
                 return;
             }
             if (!currentUser) {
