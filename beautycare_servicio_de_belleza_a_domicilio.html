@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCare - Servicios de Belleza a Domicilio</title>
+    <!-- Tailwind CSS (CDN público con no-referrer para evitar bloqueos 403) -->
+    <script src="https://cdn.tailwindcss.com" referrerpolicy="no-referrer"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            700: '#be185d',
+                            800: '#9d174d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" referrerpolicy="no-referrer" />
+    <!-- Leaflet CSS y JS sin restricciones de Referrer / CORS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" referrerpolicy="no-referrer"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" referrerpolicy="no-referrer"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        #map, #fallback-map-canvas {
+            height: 280px;
+            width: 100%;
+            border-radius: 0.75rem;
+            z-index: 1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f472b6;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md shadow-sm border-b border-rose-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-600 to-rose-400 flex items-center justify-center text-white shadow-md">
+                    <i class="fa-solid font-bold text-lg fa-wand-magic-sparkles"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-brand-700 to-rose-500 bg-clip-text text-transparent">BeautyCare</h1>
+                    <p class="text-[10px] text-slate-400 font-medium">LIMA METROPOLITANA</p>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+                <a href="#servicios" class="hover:text-brand-600 transition-colors">Servicios</a>
+                <a href="#estilistas" class="hover:text-brand-600 transition-colors">Estilistas</a>
+                <a href="#resenas" class="hover:text-brand-600 transition-colors">Reseñas</a>
+                <button onclick="openHistoryModal()" class="hover:text-brand-600 transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Mis Citas
+                </button>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <button onclick="openStylistModal()" class="hidden sm:inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 border border-brand-500 text-brand-700 rounded-lg hover:bg-brand-50 transition-colors">
+                    <i class="fa-solid fa-user-plus"></i> Soy Estilista
+                </button>
+                
+                <button onclick="openCartModal()" class="relative p-2.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-xl transition-all shadow-sm">
+                    <i class="fa-solid fa-sparkles text-lg"></i>
+                    <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-brand-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <section class="relative bg-gradient-to-b from-rose-100/60 via-pink-50/40 to-slate-50 py-12 md:py-16 overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4 text-center md:text-left">
+                    <span class="inline-block px-3 py-1 bg-brand-100 text-brand-700 rounded-full text-xs font-semibold tracking-wide">
+                        ✨ ¡Belleza Profesional en Tu Hogar!
+                    </span>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
+                        Tu salón de belleza donde te encuentres.
+                    </h2>
+                    <p class="text-slate-600 text-sm sm:text-base max-w-lg mx-auto md:mx-0">
+                        Maquillaje, peinados, manicura y cuidado personal con los mejores estilistas de Lima. Tarifa de delivery calculada en tiempo real según tu ubicación.
+                    </p>
+                    <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-4">
+                        <a href="#servicios" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-lg shadow-brand-500/30 transition-all text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check"></i> Agendar Servicio
+                        </a>
+                        <button onclick="locateUserPrompt()" class="px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold rounded-xl shadow-sm text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-brand-500"></i> Cobertura en Lima
+                        </button>
+                    </div>
+                </div>
+                <div class="relative flex justify-center">
+                    <div class="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+                        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80" 
+                             alt="BeautyCare Salon" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/800x800/fce7f3/db2777?text=BeautyCare+Lima'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
+                            <div class="text-white">
+                                <p class="text-xs uppercase tracking-wider text-rose-200 font-semibold">Garantía de Calidad</p>
+                                <p class="text-lg font-bold">Estilistas verificados con protocolos de higiene</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="servicios" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-900">Servicios Disponibles</h3>
+                    <p class="text-slate-500 text-sm">Selecciona los tratamientos que deseas reservar</p>
+                </div>
+                <!-- Filtros de categoría -->
+                <div class="flex flex-wrap gap-2" id="category-filters">
+                    <!-- Dinámico -->
+                </div>
+            </div>
+
+            <div id="services-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Se poblará dinámicamente -->
+            </div>
+        </section>
+
+        <section id="estilistas" class="bg-white py-12 border-y border-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <h3 class="text-2xl font-bold text-slate-900">Nuestro Equipo Profesional</h3>
+                    <p class="text-slate-500 text-sm">Expertos capacitados listos para brindarte la mejor atención a domicilio</p>
+                </div>
+                <div id="stylists-grid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Se carga dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <section id="resenas" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <h3 class="text-2xl font-bold text-slate-900">Lo que dicen nuestros clientes</h3>
+                <p class="text-slate-500 text-sm">Experiencias reales registradas en Lima</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6" id="reviews-container">
+                <!-- Reseñas estáticas/dinámicas -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-300 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white">
+                        <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                    </div>
+                    <span class="text-lg font-bold text-white">BeautyCare Lima</span>
+                </div>
+                <p class="text-slate-400 text-xs leading-relaxed">
+                    Atención personalizada de belleza a domicilio. Cobertura completa en Lima Metropolitana con tarifas transparentes y profesionales verificados.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-3">Centro de Atención</h4>
+                <ul class="space-y-2 text-xs text-slate-400">
+                    <li><i class="fa-solid fa-phone text-brand-400 mr-2"></i> +51 987 654 321</li>
+                    <li><i class="fa-solid fa-envelope text-brand-400 mr-2"></i> contacto@beautycare.pe</li>
+                    <li><i class="fa-solid fa-clock text-brand-400 mr-2"></i> Lun - Dom: 7:00 AM - 9:00 PM</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-3">Sede Central</h4>
+                <p class="text-xs text-slate-400 mb-2">Centro de Lima (Punto de cálculo de delivery)</p>
+                <div class="px-3 py-2 bg-slate-800 rounded-lg text-xs font-mono text-brand-300 inline-block">
+                    Lat: -12.046374, Lng: -77.042793
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
+            &copy; 2026 BeautyCare Perú. Todos los derechos reservados.
+        </div>
+    </footer>
+
+
+    <!-- MODAL DE CARRITO Y AGENDAMIENTO CON MAPA INTEGRADO -->
+    <div id="cart-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            <!-- Header Modal -->
+            <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-sparkle text-brand-400"></i>
+                    <h3 class="font-bold text-base sm:text-lg">Tu Cita de Belleza</h3>
+                </div>
+                <button onclick="closeCartModal()" class="text-slate-400 hover:text-white text-xl p-1">&times;</button>
+            </div>
+
+            <!-- Body Modal -->
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-6 custom-scrollbar">
+                <!-- Lista de ítems en carrito -->
+                <div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">1. Servicios Seleccionados</h4>
+                    <div id="cart-items-list" class="space-y-2">
+                        <!-- Carga dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Selección de ubicación y cálculo de Delivery -->
+                <div class="border-t border-slate-100 pt-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">2. Dirección de Atención (Mapa)</h4>
+                        <span id="delivery-tag" class="text-xs font-bold text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200">
+                            Delivery: S/ 5.00
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-2">Haz clic en el mapa para ubicar tu hogar o usa tu ubicación actual:</p>
+                    
+                    <div class="flex gap-2 mb-3">
+                        <button type="button" onclick="useGeolocation()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1">
+                            <i class="fa-solid fa-crosshairs text-brand-600"></i> Usar mi GPS
+                        </button>
+                        <span id="dist-info" class="text-xs text-slate-500 flex items-center font-medium">Distancia: 0.0 km</span>
+                    </div>
+
+                    <!-- Contenedor del Mapa (Leaflet con Canvas Fallback) -->
+                    <div class="relative rounded-xl overflow-hidden border border-slate-200">
+                        <div id="map"></div>
+                        <canvas id="fallback-map-canvas" class="hidden"></canvas>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">* Tarifa de delivery calculada dinámicamente entre S/ 5.00 y S/ 15.00 según la distancia desde el Centro de Lima.</p>
+                </div>
+
+                <!-- Especificaciones e Instrucciones -->
+                <div class="border-t border-slate-100 pt-4">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">3. Especificaciones e Instrucciones Especiales</h4>
+                    <textarea id="special-instructions" rows="2" 
+                        class="w-full text-xs p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                        placeholder="Ej: Tengo piel sensible, prefiero estilista mujer, piso 3 sin ascensor, etc..."></textarea>
+                </div>
+
+                <!-- Selección de Fecha y Hora -->
+                <div class="border-t border-slate-100 pt-4 grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Fecha de Atención</label>
+                        <input type="date" id="appointment-date" class="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Hora Aprox.</label>
+                        <input type="time" id="appointment-time" value="10:00" class="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <!-- Datos del Cliente -->
+                <div class="border-t border-slate-100 pt-4 space-y-3">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">4. Datos del Cliente</h4>
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        <input type="text" id="client-name" placeholder="Nombre completo" class="text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500">
+                        <input type="tel" id="client-phone" placeholder="Teléfono / WhatsApp" class="text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Modal con Resumen de Totales y Botón Confirmar -->
+            <div class="bg-slate-50 p-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div>
+                    <div class="text-xs text-slate-500">
+                        Subtotal: <span id="cart-subtotal" class="font-semibold text-slate-700">S/ 0.00</span> | 
+                        Delivery: <span id="cart-delivery" class="font-semibold text-slate-700">S/ 5.00</span>
+                    </div>
+                    <div class="text-lg font-bold text-slate-900">
+                        Total Final: <span id="cart-total" class="text-brand-700">S/ 5.00</span>
+                    </div>
+                </div>
+
+                <button onclick="confirmAppointment()" class="w-full sm:w-auto px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md shadow-brand-500/20 transition-all text-xs flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check-circle"></i> Confirmar y Generar Voucher
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VOUCHER / COMPROBANTE -->
+    <div id="voucher-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div class="bg-brand-600 text-white p-4 text-center relative">
+                <i class="fa-solid fa-circle-check text-4xl text-rose-200 mb-1"></i>
+                <h3 class="font-bold text-lg">¡Cita Agendada con Éxito!</h3>
+                <p class="text-xs text-rose-100">Voucher Oficial BeautyCare</p>
+                <button onclick="closeVoucherModal()" class="absolute top-3 right-3 text-white/80 hover:text-white text-xl">&times;</button>
+            </div>
+
+            <div class="p-6 space-y-4 text-xs overflow-y-auto max-h-[70vh]" id="voucher-content">
+                <!-- Se rellena dinámicamente -->
+            </div>
+
+            <div class="bg-slate-50 p-4 border-t border-slate-100 flex gap-2">
+                <button onclick="window.print()" class="flex-1 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-print"></i> Imprimir
+                </button>
+                <button onclick="closeVoucherModal()" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRO DE ESTILISTAS -->
+    <div id="stylist-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                <h3 class="font-bold text-base"><i class="fa-solid fa-user-plus text-brand-400 mr-2"></i> Registro de Estilistas</h3>
+                <button onclick="closeStylistModal()" class="text-slate-400 hover:text-white text-xl">&times;</button>
+            </div>
+            <form onsubmit="registerStylist(event)" class="p-6 space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Nombre Completo</label>
+                    <input type="text" id="stylist-reg-name" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Especialidad Principal</label>
+                    <select id="stylist-reg-spec" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500">
+                        <option value="Maquillaje Professional">Maquillaje Profesional</option>
+                        <option value="Peinados & Styling">Peinados & Styling</option>
+                        <option value="Manicura & Pedicura">Manicura & Pedicura</option>
+                        <option value="Cuidado Facial">Cuidado Facial</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Teléfono / WhatsApp</label>
+                    <input type="tel" id="stylist-reg-phone" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Años de Experiencia</label>
+                    <input type="number" id="stylist-reg-exp" min="1" max="40" value="3" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div class="pt-3">
+                    <button type="submit" class="w-full py-3 bg-brand-600 text-white font-bold rounded-xl hover:bg-brand-700 transition-colors">
+                        Enviar Solicitud
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL HISTORIAL DE CITAS -->
+    <div id="history-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                <h3 class="font-bold text-base"><i class="fa-solid fa-clock-rotate-left text-brand-400 mr-2"></i> Historial de Citas</h3>
+                <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-white text-xl">&times;</button>
+            </div>
+            <div id="history-list" class="p-6 space-y-3 overflow-y-auto text-xs custom-scrollbar">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* BASE DE DATOS Y ESTADO DE LA APLICACIÓN */
+        const LIMA_CENTER = { lat: -12.046374, lng: -77.042793 }; // Centro de Lima referencia
+
+        const SERVICES = [
+            { id: 1, name: "Maquillaje Social Elegante", cat: "Maquillaje", price: 120.00, duration: "60 min", img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=400&q=80", desc: "Incluye pestañas de tira y preparación de piel." },
+            { id: 2, name: "Peinado de Fiesta / Ondas", cat: "Peinado", price: 90.00, duration: "45 min", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=400&q=80", desc: "Styling completo con fijación de alta duración." },
+            { id: 3, name: "Manicura Gel Completa", cat: "Uñas", price: 65.00, duration: "50 min", img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=400&q=80", desc: "Esmaltado en gel duradero con diseño básico." },
+            { id: 4, name: "Limpieza Facial Hidratante", cat: "Facial", price: 110.00, duration: "60 min", img: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=400&q=80", desc: "Exfoliación, mascarilla e hidratación profunda." },
+            { id: 5, name: "Pedicura Spa Relajante", cat: "Uñas", price: 75.00, duration: "55 min", img: "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=400&q=80", desc: "Exfoliación con sales e hidratación intensiva." },
+            { id: 6, name: "Maquillaje Novia Deluxe", cat: "Maquillaje", price: 250.00, duration: "120 min", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=400&q=80", desc: "Prueba previa y productos impermeables de alta gama." }
+        ];
+
+        let STYLISTS = [
+            { id: 101, name: "Camila Mendoza", spec: "Maquillaje & Styling", rating: 4.9, jobs: 142, img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80" },
+            { id: 102, name: "Valeria Ríos", spec: "Manicura & Pedicura", rating: 4.8, jobs: 98, img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80" },
+            { id: 103, name: "Sofía Benítez", spec: "Tratamientos Faciales", rating: 5.0, jobs: 210, img: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=200&q=80" },
+            { id: 104, name: "Luciana Salazar", spec: "Peinados & Recogidos", rating: 4.7, jobs: 85, img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" }
+        ];
+
+        const REVIEWS = [
+            { name: "Andrea P.", text: "¡Súper puntuales y profesionales! El maquillaje me duró toda la noche.", rating: 5 },
+            { name: "Mariana G.", text: "Excelente servicio a domicilio en San Isidro. Recomendadísimo.", rating: 5 },
+            { name: "Carla T.", text: "Me encantó la manicura spa, la estilista fue muy cuidadosa.", rating: 4.8 }
+        ];
+
+        // Estado del Carrito y Selección
+        let cart = [];
+        let selectedLocation = { lat: LIMA_CENTER.lat, lng: LIMA_CENTER.lng };
+        let currentDeliveryCost = 5.00;
+        let mapInstance = null;
+        let mapMarker = null;
+        let isUsingFallbackCanvas = false;
+
+        window.onload = function() {
+            renderCategories();
+            renderServices("Todos");
+            renderStylists();
+            renderReviews();
+            initDefaultDate();
+        };
+
+        function initDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('appointment-date').value = today;
+            document.getElementById('appointment-date').min = today;
+        }
+
+        function renderCategories() {
+            const categories = ["Todos", ...new Set(SERVICES.map(s => s.cat))];
+            const container = document.getElementById('category-filters');
+            container.innerHTML = categories.map(cat => `
+                <button onclick="filterServices('${cat}', this)" 
+                    class="filter-btn px-4 py-1.5 rounded-full text-xs font-semibold border transition-all ${cat === 'Todos' ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-slate-600 border-slate-200 hover:border-brand-400'}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function filterServices(category, btnElement) {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.className = "filter-btn px-4 py-1.5 rounded-full text-xs font-semibold border transition-all bg-white text-slate-600 border-slate-200 hover:border-brand-400";
+            });
+            btnElement.className = "filter-btn px-4 py-1.5 rounded-full text-xs font-semibold border transition-all bg-brand-600 text-white border-brand-600";
+            renderServices(category);
+        }
+
+        function renderServices(category) {
+            const container = document.getElementById('services-grid');
+            const filtered = category === "Todos" ? SERVICES : SERVICES.filter(s => s.cat === category);
+
+            container.innerHTML = filtered.map(s => {
+                const inCart = cart.some(item => item.id === s.id);
+                return `
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
+                    <div class="h-44 overflow-hidden relative">
+                        <img src="${s.img}" alt="${s.name}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/400x300/fce7f3/db2777?text=${encodeURIComponent(s.name)}'">
+                        <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-brand-700 font-bold text-xs px-2.5 py-1 rounded-full shadow-sm">
+                            S/ ${s.price.toFixed(2)}
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="text-[10px] font-bold uppercase text-brand-500 tracking-wider mb-1">${s.cat} • ${s.duration}</div>
+                            <h4 class="font-bold text-slate-900 text-sm mb-1">${s.name}</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed">${s.desc}</p>
+                        </div>
+                        <button onclick="toggleCartItem(${s.id})" 
+                            class="w-full py-2.5 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2 ${inCart ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm shadow-brand-500/20'}">
+                            <i class="fa-solid ${inCart ? 'fa-check text-green-600' : 'fa-plus'}"></i>
+                            ${inCart ? 'Añadido a la Cita' : 'Agregar Servicio'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function renderStylists() {
+            const container = document.getElementById('stylists-grid');
+            container.innerHTML = STYLISTS.map(st => `
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center flex flex-col items-center">
+                    <img src="${st.img}" alt="${st.name}" class="w-20 h-20 rounded-full object-cover mb-3 shadow border-2 border-white" onerror="this.src='https://placehold.co/200x200/fce7f3/db2777?text=${encodeURIComponent(st.name)}'">
+                    <h4 class="font-bold text-sm text-slate-900">${st.name}</h4>
+                    <p class="text-xs text-brand-600 font-medium mb-2">${st.spec}</p>
+                    <div class="flex items-center gap-1 text-xs text-amber-500 font-bold">
+                        <i class="fa-solid fa-star"></i> ${st.rating.toFixed(1)} <span class="text-slate-400 font-normal">(${st.jobs} citas)</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviews-container');
+            container.innerHTML = REVIEWS.map(r => `
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="flex items-center gap-1 text-amber-400 text-xs mb-2">
+                        ${'<i class="fa-solid fa-star"></i>'.repeat(Math.floor(r.rating))}
+                    </div>
+                    <p class="text-xs text-slate-600 italic mb-3">"${r.text}"</p>
+                    <p class="text-xs font-bold text-slate-800">- ${r.name}</p>
+                </div>
+            `).join('');
+        }
+
+        function toggleCartItem(id) {
+            const index = cart.findIndex(item => item.id === id);
+            if (index > -1) {
+                cart.splice(index, 1);
+            } else {
+                const service = SERVICES.find(s => s.id === id);
+                if (service) cart.push(service);
+            }
+            updateCartBadge();
+            renderServices(document.querySelector('.filter-btn.bg-brand-600')?.innerText || "Todos");
+        }
+
+        function updateCartBadge() {
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        function openCartModal() {
+            if (cart.length === 0) {
+                alert("Por favor, selecciona al menos un servicio antes de agendar.");
+                return;
+            }
+            renderCartItemsList();
+            document.getElementById('cart-modal').classList.remove('hidden');
+            setTimeout(() => {
+                initMap();
+            }, 200);
+        }
+
+        function closeCartModal() {
+            document.getElementById('cart-modal').classList.add('hidden');
+        }
+
+        function renderCartItemsList() {
+            const list = document.getElementById('cart-items-list');
+            list.innerHTML = cart.map(item => `
+                <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs">
+                    <div>
+                        <span class="font-bold text-slate-800">${item.name}</span>
+                        <span class="text-slate-400 ml-2">(${item.duration})</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold text-brand-700">S/ ${item.price.toFixed(2)}</span>
+                        <button onclick="toggleCartItem(${item.id}); renderCartItemsList(); recalculateTotals();" class="text-slate-400 hover:text-red-500">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            recalculateTotals();
+        }
+
+        function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radio de la Tierra en km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; // Distancia en km
+        }
+
+        function updateDeliveryCost(lat, lng) {
+            selectedLocation = { lat, lng };
+            const dist = calculateHaversineDistance(LIMA_CENTER.lat, LIMA_CENTER.lng, lat, lng);
+            
+            // Regla de negocio: Tarifa entre S/ 5.00 y S/ 15.00 basado en distancia
+            // Base 5.00 + S/ 0.80 por km adicional
+            let cost = 5.00 + (dist * 0.80);
+            if (cost < 5.00) cost = 5.00;
+            if (cost > 15.00) cost = 15.00;
+
+            currentDeliveryCost = Math.round(cost * 10) / 10; // Redondear a un decimal apropiado
+
+            document.getElementById('dist-info').innerText = `Distancia: ${dist.toFixed(1)} km desde Centro`;
+            document.getElementById('delivery-tag').innerText = `Delivery: S/ ${currentDeliveryCost.toFixed(2)}`;
+            recalculateTotals();
+        }
+
+        function recalculateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+            const total = subtotal + currentDeliveryCost;
+
+            document.getElementById('cart-subtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('cart-delivery').innerText = `S/ ${currentDeliveryCost.toFixed(2)}`;
+            document.getElementById('cart-total').innerText = `S/ ${total.toFixed(2)}`;
+        }
+
+        function initMap() {
+            const mapContainer = document.getElementById('map');
+            const canvasContainer = document.getElementById('fallback-map-canvas');
+
+            // Verificar si Leaflet cargó correctamente
+            if (typeof L !== 'undefined' && !isUsingFallbackCanvas) {
+                try {
+                    if (!mapInstance) {
+                        mapInstance = L.map('map').setView([LIMA_CENTER.lat, LIMA_CENTER.lng], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                            attribution: '© OpenStreetMap'
+                        }).addTo(mapInstance);
+
+                        mapMarker = L.marker([LIMA_CENTER.lat, LIMA_CENTER.lng], { draggable: true }).addTo(mapInstance);
+                        
+                        mapInstance.on('click', function(e) {
+                            mapMarker.setLatLng(e.latlng);
+                            updateDeliveryCost(e.latlng.lat, e.latlng.lng);
+                        });
+
+                        mapMarker.on('dragend', function(e) {
+                            const position = mapMarker.getLatLng();
+                            updateDeliveryCost(position.lat, position.lng);
+                        });
+                    } else {
+                        mapInstance.invalidateSize();
+                    }
+                    updateDeliveryCost(LIMA_CENTER.lat, LIMA_CENTER.lng);
+                    return;
+                } catch(err) {
+                    console.warn("Fallo en Leaflet, usando Fallback Interactivo Canvas.", err);
+                    isUsingFallbackCanvas = true;
+                }
+            } else {
+                isUsingFallbackCanvas = true;
+            }
+
+            // Si falla Leaflet o no está disponible, activar Canvas Interactivo Seguro
+            mapContainer.classList.add('hidden');
+            canvasContainer.classList.remove('hidden');
+            initCanvasFallback();
+        }
+
+        function initCanvasFallback() {
+            const canvas = document.getElementById('fallback-map-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth || 400;
+            canvas.height = 280;
+
+            function drawMap() {
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Dibujar cuadrícula de mapa estilizada
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < canvas.width; x += 40) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                }
+                for (let y = 0; y < canvas.height; y += 40) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                }
+
+                // Centro de Lima (Punto Fijo)
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI * 2); ctx.fill();
+                ctx.font = '10px sans-serif'; ctx.fillStyle = '#64748b';
+                ctx.fillText('Centro de Lima', cx - 35, cy + 18);
+
+                // Ubicación Seleccionada
+                const offsetX = (selectedLocation.lng - LIMA_CENTER.lng) * 2000;
+                const offsetY = (LIMA_CENTER.lat - selectedLocation.lat) * 2000;
+                const ux = Math.max(20, Math.min(canvas.width - 20, cx + offsetX));
+                const uy = Math.max(20, Math.min(canvas.height - 20, cy + offsetY));
+
+                // Línea de distancia
+                ctx.strokeStyle = '#f472b6'; ctx.setLineDash([4, 4]);
+                ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ux, uy); ctx.stroke(); ctx.setLineDash([]);
+
+                // Marcador de Ubicación del cliente
+                ctx.fillStyle = '#db2777';
+                ctx.beginPath(); ctx.arc(ux, uy, 10, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath(); ctx.arc(ux, uy, 4, 0, Math.PI * 2); ctx.fill();
+            }
+
+            canvas.onclick = function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+
+                const newLng = LIMA_CENTER.lng + (clickX - cx) / 2000;
+                const newLat = LIMA_CENTER.lat - (clickY - cy) / 2000;
+
+                updateDeliveryCost(newLat, newLng);
+                drawMap();
+            };
+
+            drawMap();
+        }
+
+        function useGeolocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        if (mapInstance && !isUsingFallbackCanvas) {
+                            mapInstance.setView([latitude, longitude], 15);
+                            mapMarker.setLatLng([latitude, longitude]);
+                        }
+                        updateDeliveryCost(latitude, longitude);
+                        if (isUsingFallbackCanvas) initCanvasFallback();
+                    },
+                    (error) => {
+                        alert("No se pudo obtener la ubicación GPS. Puedes seleccionar manualmente en el mapa.");
+                    }
+                );
+            } else {
+                alert("Tu navegador no soporta geolocalización.");
+            }
+        }
+
+        function confirmAppointment() {
+            const name = document.getElementById('client-name').value.trim();
+            const phone = document.getElementById('client-phone').value.trim();
+            const date = document.getElementById('appointment-date').value;
+            const time = document.getElementById('appointment-time').value;
+            const instructions = document.getElementById('special-instructions').value.trim();
+
+            if (!name || !phone || !date) {
+                alert("Por favor, completa tu nombre, teléfono y fecha de atención.");
+                return;
+            }
+
+            if (cart.length === 0) {
+                alert("El carrito está vacío.");
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+            const total = subtotal + currentDeliveryCost;
+            const code = 'BC-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Asignar estilista al azar
+            const assignedStylist = STYLISTS[Math.floor(Math.random() * STYLISTS.length)];
+
+            const appointmentData = {
+                code,
+                name,
+                phone,
+                date,
+                time,
+                instructions: instructions || "Sin especificaciones especiales",
+                services: [...cart],
+                subtotal,
+                delivery: currentDeliveryCost,
+                total,
+                stylist: assignedStylist.name,
+                createdAt: new Date().toLocaleString()
+            };
+
+            // Guardar en Historial
+            saveToHistory(appointmentData);
+
+            // Mostrar Voucher
+            renderVoucher(appointmentData);
+            closeCartModal();
+            document.getElementById('voucher-modal').classList.remove('hidden');
+
+            // Lanzar Confetti
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            }
+
+            // Limpiar Carrito
+            cart = [];
+            updateCartBadge();
+        }
+
+        function renderVoucher(data) {
+            const container = document.getElementById('voucher-content');
+            container.innerHTML = `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Código de Reserva</p>
+                    <p class="text-lg font-mono font-bold text-brand-700">${data.code}</p>
+                </div>
+
+                <div class="space-y-1 border-b border-slate-100 pb-2">
+                    <p><strong>Cliente:</strong> ${data.name}</p>
+                    <p><strong>Teléfono:</strong> ${data.phone}</p>
+                    <p><strong>Fecha / Hora:</strong> ${data.date} a las ${data.time}</p>
+                    <p><strong>Estilista Asignada:</strong> ${data.stylist}</p>
+                </div>
+
+                <div class="border-b border-slate-100 pb-2">
+                    <p class="font-bold text-slate-700 mb-1">Servicios Reservados:</p>
+                    ${data.services.map(s => `
+                        <div class="flex justify-between text-slate-600">
+                            <span>${s.name}</span>
+                            <span>S/ ${s.price.toFixed(2)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="border-b border-slate-100 pb-2">
+                    <p class="font-bold text-slate-700 mb-1">Especificaciones Especiales:</p>
+                    <p class="text-slate-500 italic bg-amber-50 p-2 rounded border border-amber-100">${data.instructions}</p>
+                </div>
+
+                <div class="space-y-1 font-semibold pt-1">
+                    <div class="flex justify-between text-slate-500">
+                        <span>Subtotal Servicios:</span>
+                        <span>S/ ${data.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Costo de Delivery:</span>
+                        <span>S/ ${data.delivery.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between text-sm font-bold text-slate-900 border-t pt-1">
+                        <span>TOTAL FINAL:</span>
+                        <span class="text-brand-700">S/ ${data.total.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeVoucherModal() {
+            document.getElementById('voucher-modal').classList.add('hidden');
+        }
+
+        function saveToHistory(app) {
+            let history = JSON.parse(localStorage.getItem('beautycare_history') || '[]');
+            history.unshift(app);
+            localStorage.setItem('beautycare_history', JSON.stringify(history));
+        }
+
+        function openHistoryModal() {
+            const history = JSON.parse(localStorage.getItem('beautycare_history') || '[]');
+            const list = document.getElementById('history-list');
+
+            if (history.length === 0) {
+                list.innerHTML = `<p class="text-center text-slate-400 py-6">No tienes citas agendadas aún.</p>`;
+            } else {
+                list.innerHTML = history.map(item => `
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1">
+                        <div class="flex justify-between items-center font-bold">
+                            <span class="text-brand-700">${item.code}</span>
+                            <span class="text-slate-400 font-normal">${item.date}</span>
+                        </div>
+                        <p><strong>Total:</strong> S/ ${item.total.toFixed(2)} (${item.services.length} servicios)</p>
+                        <p class="text-[11px] text-slate-500">Estilista: ${item.stylist}</p>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('history-modal').classList.remove('hidden');
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('history-modal').classList.add('hidden');
+        }
+
+        function openStylistModal() {
+            document.getElementById('stylist-modal').classList.remove('hidden');
+        }
+
+        function closeStylistModal() {
+            document.getElementById('stylist-modal').classList.add('hidden');
+        }
+
+        function registerStylist(e) {
+            e.preventDefault();
+            const name = document.getElementById('stylist-reg-name').value;
+            const spec = document.getElementById('stylist-reg-spec').value;
+
+            STYLISTS.push({
+                id: Date.now(),
+                name,
+                spec,
+                rating: 5.0,
+                jobs: 1,
+                img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80'
+            });
+
+            renderStylists();
+            closeStylistModal();
+            alert(`¡Gracias ${name}! Tu solicitud ha sido registrada y tu perfil se encuentra activo en el sistema.`);
+        }
+
+        function locateUserPrompt() {
+            openCartModal();
+            useGeolocation();
+        }
+    </script>
+</body>
+</html>
